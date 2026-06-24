@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import './ProductList.css'
 import CartItem from './CartItem';
-import addItem from './CartSlice';
+import { addItem } from './CartSlice';
 
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
@@ -19,6 +20,10 @@ function ProductList({ onHomeClick }) {
     //      "Lavender": true
     // }
 
+    const dispatch = useDispatch(); //attiviamo il telecomando che permette a react di parlare con redux.
+
+    const CartItems = useSelector( state => state.cart.items ); //al contrario di useDispatch qui da react possiamo guardare dentro redux e prelevare i dati in tempo reale.
+    // attraverso useSelector "resto in ascolto di qualsiasi cambiamento di stato" e in caso arrivano cambiamenti, aggiorno.
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -232,7 +237,7 @@ function ProductList({ onHomeClick }) {
         padding: '15px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignIems: 'center',
+        alignItems: 'center',
         fontSize: '20px',
     }
     const styleObjUl = {
@@ -281,6 +286,21 @@ function ProductList({ onHomeClick }) {
         }));
     };
 
+
+    // qui aggiorno il numerino del carrello
+    const calculateTotalQuantity = () => {
+        // per prima cosa mi chiedo se l'array esiste.
+        // se sì eseguo la parte di codice immediatamente 
+        // successiva a ?. altrimenti passo al pezzo successivo
+        // a ":" e restituisco 0.
+        // uso la funzione reduce. Dentro questa utilizzo una funzione di callback.
+        // ho total (un accumulatore che parte da 0, lo vedi dopo la somma) e item (l'elemento corrente).
+        // con reduce ottengo da un array complesso un solo elemento.
+        // faccio così la conta delle singole quantità per oggetto e 
+        // ottengo il numero totale degli oggetti selezionati.
+        return CartItems ? CartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+    }
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -298,7 +318,9 @@ function ProductList({ onHomeClick }) {
                 </div>
                 <div style={styleObjUl}>
                     <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
-                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg></h1></a></div>
+                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg>
+                    {calculateTotalQuantity() > 0 && (<span className="cart-badge">{calculateTotalQuantity()}</span>)}
+                    </h1></a></div>
                 </div>
             </div>
             {!showCart ? (
@@ -321,9 +343,10 @@ function ProductList({ onHomeClick }) {
                                     <div className="product-cost">${plant.cost}</div>
                                     <button
                                         className="product-button"
+                                        disabled={addedToCart[plant.name]} // Si disabilita se addedToCart è true.
                                         onClick={() => handleAddToCart(plant)} // handle adding plant to cart
                                     >
-                                        Add to Cart
+                                        {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
                                     </button>
                                     </div>
                             ))}
