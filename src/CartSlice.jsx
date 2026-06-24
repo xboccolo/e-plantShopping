@@ -23,7 +23,8 @@ export const CartSlice = createSlice({
       // basta questa riga perché filter è un metodo che crea un nuovo array di oggetti
       // che superano la condizione data. Quindi non viene cancellato qualcosa
       // dall'array originale.
-      state.items = state.items.filter(item => item.name !== name);
+    // Confronta il nome dell'elemento con il nome del prodotto arrivato dall'azione
+    state.items = state.items.filter(item => item.name !== action.payload.name);
     },
     updateQuantity: (state, action) => {
       const { name, quantity } = action.payload;

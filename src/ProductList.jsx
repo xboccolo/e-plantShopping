@@ -231,26 +231,56 @@ function ProductList({ onHomeClick }) {
             ]
         }
     ];
+
     const styleObj = {
-        backgroundColor: '#4CAF50',
-        color: '#fff!important',
-        padding: '15px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: '20px',
-    }
-    const styleObjUl = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '1100px',
-    }
-    const styleA = {
-        color: 'white',
-        fontSize: '30px',
-        textDecoration: 'none',
-    }
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr', /* Mantiene le 3 colonne perfette: Sinistra, Centro, Destra */
+    alignItems: 'center',
+    padding: '15px 40px',
+    width: '100%',
+    boxSizing: 'border-box',
+}
+
+const styleObjUl = {
+    display: 'contents', /* TRUCCO: Dice alla griglia di ignorare questo div contenitore e usare direttamente i suoi figli (Plants e Carrello) nelle colonne */
+}
+
+const stylePlants = {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    fontSize: '30px',
+    textAlign: 'center',        /* Centra il testo all'interno della colonna centrale */
+    display: 'block',
+    width: '100%',
+}
+
+const styleCart = {
+    display: 'flex',
+    justifyContent: 'flex-end',  /* Spinge l'icona del carrello all'estrema destra della terza colonna */
+    alignItems: 'center',
+    textDecoration: 'none',
+    width: '100%',
+    paddingRight: '20px',        /* Cuscinetto di sicurezza dal bordo destro dello schermo */
+}
+
+const styleCartNumber = {
+    position: 'absolute',
+    top: '-5px',                 /* Aggancia il bollino sopra l'icona */
+    right: '-10px',              /* Sposta il bollino a destra dell'icona */
+    width: '24px',
+    height: '24px',
+    borderRadius: '50%',
+    background: 'red',
+    color: 'white',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+}
 
     const handleHomeClick = (e) => {
         e.preventDefault();
@@ -316,19 +346,79 @@ function ProductList({ onHomeClick }) {
                     </div>
 
                 </div>
-                <div style={styleObjUl}>
-                    <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
-                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg>
-                    {calculateTotalQuantity() > 0 && (<span className="cart-badge">{calculateTotalQuantity()}</span>)}
-                    </h1></a></div>
+               <div style={styleObjUl}>
+                    <a
+                    href="#"
+                    onClick={(e)=>handlePlantsClick(e)}
+                    style={stylePlants}
+                    >
+                    Plants
+                    </a>
+
+                    <a
+                    href="#"
+                    onClick={(e)=>handleCartClick(e)}
+                    style={styleCart}
+                    >
+
+                    <div
+                    className="cart"
+                    style={{
+                    position:'relative',
+                    display:'inline-flex',
+                    justifyContent:'center',
+                    alignItems:'center'
+                    }}
+                    >
+
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 256 256"
+                    height="68"
+                    width="68"
+                    >
+
+                    <rect width="156" height="156" fill="none"/>
+
+                    <circle cx="80" cy="216" r="12"/>
+
+                    <circle cx="184" cy="216" r="12"/>
+
+                    <path
+                    d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8"
+                    fill="none"
+                    stroke="#faf9f9"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    />
+
+                    </svg>
+
+                    {calculateTotalQuantity() > 0 && (
+                        <span 
+                            style={{
+                            ...styleCartNumber,
+                            top: '5px',     /* Sposta il bollino verso il basso, all'interno dell'icona */
+                            right: '5px'    /* Sposta il bollino verso sinistra, all'interno dell'icona */
+                            }}
+                            >
+                            {calculateTotalQuantity()}
+                        </span>
+                    )}
+
+                    </div>
+
+                    </a>
+
+                    </div>
                 </div>
-            </div>
             {!showCart ? (
                 <div className="product-grid">
                    {plantsArray.map((item, index) => ( //loop through each individual category in plantsArray
                         <div key={index}> {/* unique key for each category div */}
-                        <h1>
-                            <div>{item.category}</div> {/* display the category name */}
+                        <h1 className="category-title">
+                            <span>{item.category}</span> {/* display the category name */}
                         </h1>
                         <div className="product-list"> {/* per ogni categoria mostro la lista di prodotti */}
                             {item.plants.map((plant, plantIndex) => ( //loop through each plant object inside the current category
@@ -340,13 +430,13 @@ function ProductList({ onHomeClick }) {
                                     />
                                     <div className="product-title">{plant.name}</div> {/* aggiungo il nome delle singole piante alla visualizzazione */}
                                     <div className="product-description">{plant.description}</div>
-                                    <div className="product-cost">${plant.cost}</div>
+                                    <div className="product-cost">{plant.cost}</div>
                                     <button
                                         className="product-button"
-                                        disabled={addedToCart[plant.name]} // Si disabilita se addedToCart è true.
+                                        disabled={CartItems.some(item => item.name === plant.name)}// Si disabilita se addedToCart è true.
                                         onClick={() => handleAddToCart(plant)} // handle adding plant to cart
                                     >
-                                        {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                                        {CartItems.some(item => item.name === plant.name) ? "Added to Cart" : "Add to Cart"}
                                     </button>
                                     </div>
                             ))}

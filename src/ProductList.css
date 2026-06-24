@@ -107,8 +107,17 @@ body {
     margin-top: 10px;
 }
 
+/* 2. EFFETTO HOVER: Diventa un rosso più scuro quando ci passi sopra con il mouse */
 .product-button:hover {
-    background-color: #c0392b;
+    background-color: #c0392b !important; /* Rosso più scuro */
+}
+
+/* Stile del pulsante quando è disabilitato (Added to Cart) */
+.product-button:disabled {
+    background-color: #cccccc !important; /* Colore grigio chiaro */
+    color: #666666 !important;            /* Testo grigio scuro */
+    cursor: not-allowed;                  /* Cambia il cursore in un simbolo di divieto */
+    border-color: #cccccc !important;     /* Rende grigio anche l'eventuale bordo */
 }
 
 /* Pseudo-elements - Sale badge */
@@ -169,7 +178,6 @@ body {
     /* background-color: red; */
     margin-left: 27px;
     position: absolute;
-    font-size: 29px;
 
 }
 .plantname_heading{
