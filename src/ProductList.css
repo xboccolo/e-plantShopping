@@ -4,6 +4,19 @@ body, h1, ul {
     padding: 0;
 }
 
+.category-title {
+    text-align: center;          /* Centra il titolo della categoria nella pagina */
+    margin: 30px 0;              /* Stacca la categoria dalle altre sezioni */
+}
+
+.category-title span {
+    border: 2px solid #4CAF50;   /* Crea la cornice verde attorno al testo */
+    padding: 10px 20px;          /* Distanzia la cornice dal testo interno */
+    border-radius: 5px;          /* Arrotonda leggermente gli angoli della cornice */
+    background-color: #f9f9f9;   /* Sfondo leggero per far risaltare il titolo */
+    display: inline-block;       /* Permette al bordo di stringersi attorno alla scritta */
+}
+
 /* Set a background color */
 body {
     font-family: Arial, sans-serif;
