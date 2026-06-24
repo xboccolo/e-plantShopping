@@ -4,32 +4,60 @@ import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
+  // dammi dentro cart la lista di tutti i prodotti nel carrello
   const cart = useSelector(state => state.cart.items);
+  // così posso usare dispatch(azione) direttamente per inviare
+  // l'ordine di moifica a redux. 
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
- 
+    // uso let di solito prima di iniziare un ciclo.
+    // la variabile verrà continuamente sovrascritta.
+      let total = 0;
+      cart.forEach(item => {
+          const {quantity, cost} = item;
+          const costAsNumber = parseFloat(cost.substring(1)) * quantity;
+          total += costAsNumber;
+      });
+      return total;
   };
 
+  // action for a button to go back to the products page
+  // la funzione onContinueShopping viene ereditata dalla parent class
+  // ProductList.jsx.
   const handleContinueShopping = (e) => {
-   
+      e.preventDefault(); //Blocca il comportamento predefinito del pulsante.
+      onContinueShopping(e); // esegue davvero la funzione passandogli l'evento.
   };
-
-
 
   const handleIncrement = (item) => {
+    //redux fa un'operazione di traduzione quindi qui alla funzione updateQuantity 
+    // che prenderebbe state e action come argomenti, do solo l'oggetto come paramentro.
+    // quindi chiamo il dispatch su di lei, passandogli l'item.
+    dispatch(updateQuantity({name: item.name, quantity: item.quantity + 1}));
   };
 
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({name: item.name, quantity: item.quantity - 1}));
+    } else {
+      dispatch(removeItem(item));
+    } 
   };
 
   const handleRemove = (item) => {
+    dispatch(removeItem(item));
   };
 
-  // Calculate total cost based on quantity for an item
+  // Calculate total cost based on quantity for an item = SUBTOTAL
   const calculateTotalCost = (item) => {
+    const costAsNumber = parseFloat(item.cost.substring(1));
+    return costAsNumber * item.quantity;
+  };
+
+  const handleCheckoutShopping = (e) => {
+  alert('Functionality to be added for future reference');
   };
 
   return (
